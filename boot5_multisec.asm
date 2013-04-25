@@ -145,7 +145,7 @@ LABEL_FILENAME_FOUND:	; 找到 LOADER.BIN 后便来到这里继续
 
 LABEL_GOON_LOADING_FILE:
 	push bx				; 保存装载程序偏移地址
-	mov	cl, 1				; 1个扇区
+	mov	cl, 2				; 2个扇区
 	call	ReadSector		; 读扇区
 
 ; 每读一个扇区就在 "Booting  " 后面打一个点, 形成这样的效果：Booting ......
@@ -154,10 +154,18 @@ LABEL_GOON_LOADING_FILE:
 	mov	bl, 0Fh		; 黑底白字
 	int	10h			; 显示中断
 
-	; 计算文件的下一扇区号
+	; 计算文件的下2个扇区号
 	pop bx				; 取出装载程序偏移地址
 	pop	ax				; 取出此扇区在FAT中的序号
 	call	GetFATEntry		; 获取FAT项中的下一簇号
+        mov	dx, RootDirSectors	; DX = 根目录扇区数 = 14
+	add	ax, dx			; 扇区序号 + 根目录扇区数
+	add	ax, DeltaSectorNo		; AX = 要读的数据扇区地址
+	add	bx, [BPB_BytsPerSec]	; BX+512指向装载程序区的下一个扇区地址
+	pop bx				; 取出装载程序偏移地址
+	pop	ax				; 取出此扇区在FAT中的序号
+	call	GetFATEntry		; 获取FAT项中的下一簇号
+        
 	cmp	ax, 0FF8h		; 是否是文件最后簇
 	jae	LABEL_FILE_LOADED	; ≥FF8h时跳转，否则读下一个簇
 	push ax				; 保存扇区在FAT中的序号

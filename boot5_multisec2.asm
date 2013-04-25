@@ -82,7 +82,7 @@ LABEL_SEARCH_IN_ROOT_DIR_BEGIN:
 	mov	es, ax			; ES <- BaseOfLoader（9000h）
 	mov	bx, OffsetOfLoader	; BX <- OffsetOfLoader（100h）
 	mov	ax, [wSectorNo]	; AX <- 根目录中的当前扇区号
-	mov	cl, 1				; 只读一个扇区
+	mov	cl, 2				; 只读一个扇区
 	call	ReadSector		; 调用读扇区函数
 
 	mov	si, LoaderFileName	; DS:SI -> "LOADER  BIN"
