@@ -23,6 +23,7 @@
 *.jar
 *.rar
 *.tar
+*.bk
 *.zip
 
 # Logs and databases # ######################
