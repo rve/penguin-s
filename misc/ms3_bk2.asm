@@ -1,10 +1,10 @@
-;;;
+;;
 ;; RAM  calculator  using E820h
 ;;
 ;; 0.01 show type 1 (available) ram
 ;; 0.02 print in natural way (convert little endian)
 ;;
-;
+
 org 100h			; 可汇编成COM文件
 	;org 7C00h		; 用于引导扇区
 	mov ax,cs		; DS = CS, SS = CS
@@ -24,19 +24,10 @@ LB_loop: ; 调用15h中断的E820h功能获取内存容量
 	jc LB_fail			; 出错跳转
 	mov ah,byte[di+16]
 	cmp ah,01
-	jne LB_notsave
-    push edi
-    push eax
-    push ebx
-    push 0
-    push 7
-    call BigEndianize
-    pop ebx
-    pop eax
-    pop edi
+	jne LB_save
 	add di,20				; 缓冲区指针后移20个字节
 	inc word [Numb]		; 内存分段数加一
-LB_notsave:
+LB_save:
 	cmp ebx,0			; EBX = 0?
 	jne LB_loop			; EBX != 0：继续调用
 	mov di, Buf			; EBX = 0：结束，DI = 缓冲区起始地址（用于显示）
@@ -57,18 +48,53 @@ LB_fail: ; 调用失败时显示“Failed!”字符串
 LB_OK: ; 循环显示返回段值
 	cmp word [Numb],0	; Numb = 0?
 	je LB_out			; Numb = 0：退出程序
-	mov cx,20			; CX = 20（行内循环初值）
-LB_lloop: ; 行内循环
-	mov al, byte [di]		; AL = 当前字节值
-	call DispByte			; 调用显示字节十六进制值的函数
-	inc di				; DI++
-	dec cx				; CX--
-	jnz LB_lloop			; 行内循环
+    call DispBlock
 	dec word [Numb]		; Numb--
 	call DispCrnl			; 回车换行
 	jnz LB_OK			; 显示下一个内存段值
 LB_out: ; 退出程序
 	ret	; 返回
+
+; display block (20 byte)
+DispBlock:
+    push eax
+    push ecx
+	mov cx,20			; CX = 20（行内循环初值）
+LB_lloop: ; 行内循环
+    push ebx
+    push 20 ; Display how many char in big endian format
+    call DispWord
+    pop ebx
+	;mov al, byte [di]		; AL = 当前字节值
+	;call DispByte			; 调用显示字节十六进制值的函数
+	;inc di				; DI++
+	;dec cx				; CX--
+    add di, 20
+    sub cx, 20
+	jnz LB_lloop			; 行内循环
+
+	; 显示空格符
+	mov al,20h	; AL = 空格符
+	mov ah,0Eh 	; 功能号（以电传方式显示单个字符）
+	mov bl,0 	; 对文本方式置0
+	int 10h 		; 调用10H号中断
+
+    pop ecx
+    pop eax
+    ret
+
+DispWord:
+    pop ebx
+LB_dwloop:
+    dec bx;
+    push ebx
+    mov al, byte[di + bx]
+    call DispByte
+    pop ebx
+    cmp bx,0
+    jnz LB_dwloop
+    ret
+    
 
 ; 显示回车换行符
 DispCrnl:
@@ -99,20 +125,21 @@ DispByte: ; 显示字节数值串（以AL为传递参数）
 	mov bl,0 	; 对文本方式置0
 	int 10h 		; 调用10H号中断
 	; 如果当前字节的序号%8=0，则多显示一个空格（分隔结构中的字段）
-	mov ax,21	; AX = 21 - CX
-	sub ax,cx
-	and ax,7		; AX & 0111 b
-	cmp ax,0		; AX % 8 = 0 ?
-	jnz LB_ret	; != 0：返回、= 0：再显示一个空格符
-	mov al,20h	; AL = 空格符
-	mov ah,0Eh 	; 功能号（以电传方式显示单个字符）
-	mov bl,0 	; 对文本方式置0
-	int 10h 		; 调用10H号中断
+;;;	mov ax,21	; AX = 21 - CX
+;;;	sub ax,cx
+;;;	and ax,7		; AX & 0111 b
+;;;	cmp ax,0		; AX % 8 = 0 ?
+;;;	jnz LB_ret	; != 0：返回、= 0：再显示一个空格符
+;;;	mov al,20h	; AL = 空格符
+;;;	mov ah,0Eh 	; 功能号（以电传方式显示单个字符）
+;;;	mov bl,0 	; 对文本方式置0
+;;;	int 10h 		; 调用10H号中断
 LB_ret:
 	ret
 
 ; 显示单个十六进制字符函数
 ShowChar: ; 显示一个十六进制数字符：0~9、A~F（以AL为传递参数）
+    push ebx
 	cmp al,10		; AL < 10 ?
 	jl digital		; AL < 10：跳转到digital
 	add al,7		; AL >= 10：显示字母（ = 数值+=37h）
@@ -121,27 +148,8 @@ ShowChar: ; 显示一个十六进制数字符：0~9、A~F（以AL为传递参数
 	mov ah,0Eh 	; 功能号（以电传方式显示单个字符）
 	mov bl,0 	; 对文本方式置0
 	int 10h 		; 调用10H号中断
-	ret
-
-BigEndianize:
-    pop eax
     pop ebx
-    push edx
-    push ecx
-    mov cx, byte[di + eax]
-LB_beloop:
-    mov dx, byte[di + eax + 1]
-    mov byte[di + eax], dx
-    inc eax
-    cmp eax, ebx
-    jne LB_beloop
-    mov byte[di + ebx], cx
-    
-    pop ecx
-    push edx
-    ret
-    
-
+	ret
 
 ; 定义变量和缓冲区	
 	Numb dw 0			; 内存分段数，初值=0
