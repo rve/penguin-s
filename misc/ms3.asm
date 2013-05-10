@@ -1,6 +1,8 @@
 ;;
 ;; RAM  calculator  using E820h
+;;
 ;; 0.01 show type 1 (available) ram
+;; 0.02 print in natural way (convert little endian)
 ;;
 org 100h			; 可汇编成COM文件
 	;org 7C00h		; 用于引导扇区
@@ -19,12 +21,15 @@ LB_loop: ; 调用15h中断的E820h功能获取内存容量
 	mov edx,534D4150h	; "SMAP" 校验标志
 	int 15h				; 中断调用
 	jc LB_fail			; 出错跳转
+    push eax
 	mov ah,byte[di+16]
 	cmp ah,01
-	jne LB_save
+	jne LB_notsave
+    xor eax, eax
 	add di,20				; 缓冲区指针后移20个字节
 	inc word [Numb]		; 内存分段数加一
-LB_save:
+LB_notsave:
+    pop eax
 	cmp ebx,0			; EBX = 0?
 	jne LB_loop			; EBX != 0：继续调用
 	mov di, Buf			; EBX = 0：结束，DI = 缓冲区起始地址（用于显示）
