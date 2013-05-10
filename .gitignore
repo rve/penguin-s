@@ -5,6 +5,9 @@
 *.class
 *.dll
 *.exe
+*.obj
+*.out
+*.tmp
 *.o
 *.so
 
@@ -28,7 +31,6 @@
 *.xxd
 *.dump
 *.diff
-*.tmp
 *.sql
 *.sqlite
 
