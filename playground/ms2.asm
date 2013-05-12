@@ -1,4 +1,3 @@
-;; convert print format
 org 100h			; 可汇编成COM文件
 	;org 7C00h		; 用于引导扇区
 	mov ax,cs		; DS = CS, SS = CS
@@ -19,7 +18,6 @@ LB_loop: ; 调用15h中断的E820h功能获取内存容量
 	mov ah,byte[di+16]
 	cmp ah,01
 	jne LB_save
-    call LB_be
 	add di,20				; 缓冲区指针后移20个字节
 	inc word [Numb]		; 内存分段数加一
 LB_save:
@@ -108,37 +106,8 @@ ShowChar: ; 显示一个十六进制数字符：0~9、A~F（以AL为传递参数
 	mov bl,0 	; 对文本方式置0
 	int 10h 		; 调用10H号中断
 	ret
-LB_be:
-    ; convert seq
-%macro convert 1
-    push eax
-    %assign offset 20
-    %assign i 0
-    %rep %1
-    mov al, byte [di + i]
-    mov byte [di + offset +%1 -1 -i], al
-    %assign i i+1
-    %endrep
-    %assign i 0
-    %rep %1
-    mov al, byte [di +offset +i]
-    mov byte [di + i], al
-    %assign i i+1
-    %endrep
-    pop eax
-%endmacro 
-    convert 8
-    push edi
-    add di, 8
-    convert 8
-    add di, 4
-    convert 4
-    pop edi
-    ret
-
 
 ; 定义变量和缓冲区	
 	Numb dw 0			; 内存分段数，初值=0
 	FailMsg: db "Failed!"	; 中断调用失败时显示的字符串
 	Buf: times 160 db 0		; 存放中断返回值的缓冲区
-
