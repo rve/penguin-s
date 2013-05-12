@@ -1,0 +1,3 @@
+[submodule "osfs04"]
+	path = osfs04
+	url = http://github.com/rve/osfs04

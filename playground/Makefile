@@ -5,3 +5,5 @@ everything:
 		sudo mount ../FDOS11.img /mnt
 		sudo cp $(BIN)  /mnt/
 		sudo umount /mnt
+clean:
+		-rm *.com
