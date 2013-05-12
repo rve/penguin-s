@@ -10,7 +10,7 @@
 ShowChar: ; 显示字符——程序的主循环
         mov al,'B'                      ; 设置要显示的字符
         call DispChar                   ; 调用显示字符函数
-        mov dword [count],20000       ; 设置延时循环次数
+        mov dword [count],2000000       ; 设置延时循环次数
         call delay                              ; 调用延时循环函数
         ; 下面这段代码在汇编成用于进程调度的a.bin时须修改成如下语句：
         jmp ShowChar                    ; 继续循环

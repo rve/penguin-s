@@ -12,35 +12,37 @@ objects = loader.bin kernel.bin a.bin b.bin c.bin d.bin
 IMG:=a.img
 FLOPPY:=/mnt/floppy/
 
-.PHONY : everything generate myos dos clean 
+.PHONY : run generate myos dos clean 
 
-generate:
-		gzip -cd a.img.gz > a.img
-		gzip -cd FDOS11.img.gz > FDOS11.img
-		
-everything : $(BOOT_BIN) $(all)
-	make all
+everything: $(objects) 
+
+$(objects): %.bin: %.asm
+	$(ASM) $< -o $@ 
+
+$(BOOT_BIN) : $(BOOT)
+	nasm $< -o $@
+
+run : $(BOOT_BIN) $(everything)
+	make everything
 	dd if=$(BOOT_BIN) of=$(IMG) bs=512 count=1 conv=notrunc
 	@sudo mount -o loop $(IMG) $(FLOPPY)
 	@$(foreach n, $(objects), sudo cp $(n) $(FLOPPY) -v;)
 	sudo umount $(FLOPPY)
-
-all: $(objects) 
-
-$(objects): %.bin: %.asm
-		$(ASM) $< -o $@ 
-		
-$(BOOT_BIN) : $(BOOT)
-	nasm $< -o $@
+	cp .myos-bochsrc  bochsrc
+	bochs -q
 
 myos :
-		cp .myos-bochsrc bochsrc
-		bochs -q
-		
+	cp .myos-bochsrc bochsrc
+	bochs -q
+
 dos :
-		cp .dos-bochsrc  bochsrc
-		bochs -q
-		
+	cp .dos-bochsrc  bochsrc
+	bochs -q
+
+generate:
+	gzip -cd a.img.gz > a.img
+	gzip -cd FDOS11.img.gz > FDOS11.img
+
 clean :
-		-rm *.bin *.com
-		
+	-rm *.bin *.com
+
