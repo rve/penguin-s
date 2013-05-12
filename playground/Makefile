@@ -1,4 +1,4 @@
-SRC:=b.asm
+SRC:=kernel.asm
 BIN:=$(subst .asm,.com,$(SRC))
 
 IMG := a.img
