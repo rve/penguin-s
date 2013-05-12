@@ -1,0 +1,9 @@
+[submodule "osfs02"]
+	path = osfs02
+	url = http://github.com/yyu/osfs02
+[submodule "osfs01"]
+	path = osfs01
+	url = http://github.com/yyu/osfs01
+[submodule "osfs03"]
+	path = osfs03
+	url = http://github.com/yyu/osfs03
