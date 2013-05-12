@@ -1,14 +1,16 @@
 myos :
 		gzip -cd a.img.gz > a.img
-		cp myos-bochsrc bochsrc
+		cp .myos-bochsrc bochsrc
 		#dd
 		bochs -q
+		
 dos :
 		gzip -cd FDOS11.img.gz > FDOS11.img
-		cp dos-bochsrc  bochsrc
+		cp .dos-bochsrc  bochsrc
 		bochs -q
+		
 clean :
-		-rm *.bin
+		-rm *.bin *.com
 		
 clean_all:
 		-rm *.bin *.img
