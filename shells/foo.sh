@@ -6,6 +6,4 @@ else
     #nasm $1 -o loader.bin
 fi
 END
-    cp dos-bochsrc  bochsrc
-    #dd if=loader.bin of=a.img bs=512 conv=notrunc
-    bochs -q
+
