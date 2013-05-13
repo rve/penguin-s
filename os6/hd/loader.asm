@@ -7,7 +7,7 @@ OffsetOfBuf		equ	0		; 用于查找文件条目的缓冲区 ---- 偏移地址
 OffsetOfFile		equ	100h	; 文件被加载到的位置 ---- 偏移地址
 RootDirSectors	equ	32		; 根目录占用的扇区数
 SectorNoOfRootDirectory	equ	269	; 根目录区的首扇区号
-SectorNoOfFAT1	equ	259	; FAT1 的第一个扇区号 = BPB_RsvdSecCnt
+SectorNoOfFAT1	equ	253	; FAT1 的第一个扇区号 = BPB_RsvdSecCnt
 DeltaSectorNo	equ	253		; DeltaSectorNo = BPB_RsvdSecCnt + 
 							; (BPB_NumFATs * FATSz) - 2
 							; 文件的开始扇区号 = DirEntry中的开始扇区号 
