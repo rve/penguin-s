@@ -19,6 +19,7 @@
  	mov ax,[PCB1+flag_off]
  	mov [PCB2+flag_off],ax
  	mov [PCB3+flag_off],ax
+    mov [PCB4+flag_off],ax
  
  ; 设置时钟中断向量（08h），初始化段寄存器
  	xor ax,ax				; AX = 0
@@ -197,7 +198,7 @@
  	SP_off equ 14			; SP在PCB中的偏移
  	IP_off equ 24-SP_off	; =10，IP在PCB中的相对偏移
  	flag_off equ 28		; 标志寄存器在PCB中的偏移
- 	ProcNo equ 3			; 进程总数
+ 	ProcNo equ 4			; 进程总数
  	MaxAddr equ PCB_Size*ProcNo+PCB1 ; PCB表的上界
  	MainStr	db 'Kernel begine...'	,0Dh,0Ah ; 内核启动时显示的字符串+回车和换行
  	
@@ -259,4 +260,23 @@
  	dw 8000h ; SS 堆栈段寄存器，手工赋值
  	dw 3 	 ; ID 进程ID
  	db 'ProcessC' ; Name 进程名（8个字符）
+ PCB4: ; 进程C的PCB
+ 	dw 0B800h;GS \ 
+ 	dw 5000h ; FS | 部分段寄存器，用PUSH指令一个个压入栈
+ 	dw 5000h ; ES |
+ 	dw 5000h ; DS /
+ 	dw 0		 ; DI \ 
+ 	dw 0		 ; SI | 指针寄存器 \ 
+ 	dw 0		 ; BP |            |
+ 	dw 100h-4; SP /       		 | 通用寄存器，用PUSHA指令一起压入栈
+ 	dw 0	 ; BX \            	 |
+ 	dw 0	 ; DX | 主寄存器      /
+ 	dw 0	 ; CX |
+ 	dw 0	 ; AX /
+ 	dw 100h  ; IP 指令指针寄存器 \ 
+ 	dw 5000h ; CS 代码段寄存器   | 中断时由CPU压入栈
+ 	dw 0 	 ; Flags 标志寄存器  /
+ 	dw 5000h ; SS 堆栈段寄存器，手工赋值
+ 	dw 4 	 ; ID 进程ID
+ 	db 'ProcessD' ; Name 进程名（8个字符）
     ;--------------------------------------------------------------

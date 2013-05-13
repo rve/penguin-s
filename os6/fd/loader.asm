@@ -120,7 +120,7 @@ LABEL_GOON_LOADING_FILE:
         jmp     LABEL_GOON_LOADING_FILE
 LABEL_FILE_LOADED:
         inc byte [count]
-        cmp byte [count], 4
+        cmp byte [count], 5
         jnz LABEL_REPEAT
         mov dh, 5               ; "Load finish"
         call DispStr            ; 显示字符串
@@ -142,20 +142,22 @@ BS_DrvNum               DB 0    ; 中断 13 的驱动器号（软盘）
 wSectorNo       dw      0       ; 要读取的扇区数
 bOdd            db      0       ; 奇数还是偶数
 count           db      0       ; 已装入的文件数（循环变量）
-BaseOfFile: dw 4000h, 6000h, 7000h, 8000h ; 内核与进程A、B、C的内存基地址
+BaseOfFile: dw 4000h, 6000h, 7000h, 8000h, 5000h ; 内核与进程A、B、C的内存基地址
 ; 文件名字符串
 FileName:       db      "KERNEL  BIN" ; KERNEL.BIN文件名
 FileName1       db      "A       BIN" ; A.BIN文件名
 FileName2       db      "B       BIN" ; B.BIN文件名
 FileName3       db      "C       BIN" ; C.BIN文件名
+FileName4       db      "D       BIN" ; D.BIN文件名
 ; 为简化代码，下面每个字符串的长度均为MessageLength（=11），似串数组
 MessageLength   equ     11
 BootMessage:            db      "Load Kernel"   ; 11字节，不够则用空格补齐。序号0
 Message1                        db      "Load Proc A"   ; 11字节，不够则用空格补齐。序号1
 Message2                        db      "Load Proc B"   ; 11字节，不够则用空格补齐。序号2
 Message3                        db      "Load Proc C"   ; 11字节，不够则用空格补齐。序号3
-Message4                        db      "Not found! "           ; 11字节，不够则用空格补齐。序号4
-Message5                        db      "Load finish"           ; 11字节，不够则用空格补齐。序号5
+Message4                        db      "Load Proc C"   ; 11字节，不够则用空格补齐。序号3
+Message5                        db      "Not found! "           ; 11字节，不够则用空格补齐。序号4
+Message6                        db      "Load finish"           ; 11字节，不够则用空格补齐。序号5
 ;==============================================================
  
 ;----------------------------------------------------------------------------

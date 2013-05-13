@@ -10,9 +10,10 @@ objects = loader.bin kernel.bin a.bin b.bin c.bin d.bin
 
 
 IMG:=a.img
-FLOPPY:=/mnt/floppy/
+FLOPPY:=/mnt/floppy
+MOUNTFLAGS:= -o loop
 
-.PHONY : run generate myos dos clean 
+.PHONY : run generate myos dos clean everything
 
 everything: $(objects) 
 
@@ -25,7 +26,7 @@ $(BOOT_BIN) : $(BOOT)
 run : $(BOOT_BIN) $(everything)
 	make everything
 	dd if=$(BOOT_BIN) of=$(IMG) bs=512 count=1 conv=notrunc
-	@sudo mount -o loop $(IMG) $(FLOPPY)
+	@sudo mount $(MOUNTFLAGS) $(IMG) $(FLOPPY)
 	@$(foreach n, $(objects), sudo cp $(n) $(FLOPPY) -v;)
 	sudo umount $(FLOPPY)
 	cp .myos-bochsrc  bochsrc
