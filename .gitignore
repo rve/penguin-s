@@ -6,8 +6,6 @@
 *.dll
 *.exe
 *.obj
-*.out
-*.tmp
 *.o
 *.so
 
@@ -46,3 +44,9 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+*.dYSM
+
+# misc #
+*.out
+*.tmp
+*.swo
