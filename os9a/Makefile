@@ -2,7 +2,7 @@
 # Makefile of pmtestx.asm (x=[1,2,3...])
 ##################################################
 
-SRC:=pmtest4.asm
+SRC:=pmtest5.asm
 BIN:=$(subst .asm,.com,$(SRC))
 
 .PHONY : everything clean
