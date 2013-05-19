@@ -1,4 +1,4 @@
-SRC:=loader.asm
+SRC:=pmtest3.asm
 BIN:=$(subst .asm,.com,$(SRC))
 
 IMG := a.img
@@ -20,6 +20,13 @@ run : $(BIN)
 		bochs -q
 run_hd:
 		cp .hd-bochsrc bochsrc
+		bochs -q
+dos:
+		cp ./.dos-bochsrc  ./bochsrc
+		bochs -q
+
+myos:
+		cp .myos-bochsrc ./bochsrc
 		bochs -q
 		
 clean:
