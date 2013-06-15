@@ -51,7 +51,7 @@ disasm :
 # We assume that "a.img" exists in current folder
 buildimg :
 	#use dos to copy for no fat12 support in linux now
-#	dd if=boot/boot.bin of=c.img bs=512 count=1 conv=notrunc
+	dd if=boot/boot.bin of=c.img bs=512 count=1 conv=notrunc
 #	sudo mount c.img /mnt/floppy/
 #	sudo cp -fv boot/loader.bin /mnt/floppy/
 #	sudo cp -fv kernel.bin /mnt/floppy

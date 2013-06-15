@@ -1,9 +1,0 @@
-#[Distribution: Archlinux 64]
-#64bit bin:
-nasm -f elf64 -s test.asm -o test.o
-ld test.o -o hello
-#32bit bin:
-nasm -f elf test.asm -o test.o
-ld -m elf_i386 test.o -o test
-#[Distribution: OS X]
-# not working nasm & ld

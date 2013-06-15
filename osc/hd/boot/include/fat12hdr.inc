@@ -11,7 +11,7 @@
 BS_OEMName	DB 'ForrestY'	; OEM String, 必须 8 个字节
 
 BPB_BytsPerSec	DW 512		; 每扇区字节数
-BPB_SecPerClus	DB 1		; 每簇多少扇区
+BPB_SecPerClus	DB 8		; 每簇多少扇区
 BPB_RsvdSecCnt	DW 1		; Boot 记录占用多少扇区
 BPB_NumFATs	DB 2		; 共有多少 FAT 表
 BPB_RootEntCnt	DW 224		; 根目录文件数最大值
