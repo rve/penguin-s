@@ -1,0 +1,2 @@
+BPB (trivial boot) = osfs04/a/boot.asm
+trivial com hello world = myos/playground/hello.asm

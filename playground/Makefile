@@ -1,4 +1,4 @@
-SRC:=pmtest3.asm
+SRC:=tc.asm
 BIN:=$(subst .asm,.com,$(SRC))
 
 IMG := a.img

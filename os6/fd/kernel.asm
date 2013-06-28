@@ -187,7 +187,7 @@
  ; ---------------------------------------------------------------
  ; 数据区
  [SECTION .data]
- 	delay equ 400			; 计时器延迟计数(=4秒) 
+ 	delay equ 400  ; 计时器延迟计数(=4秒) 
  	count dw delay		; 计时器计数变量，初值=delay
  	kSP dw 100h			; kernel当前SP
  	PCB_Size equ 42		; PCB字节数
